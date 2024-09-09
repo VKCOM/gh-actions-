@@ -32,26 +32,6 @@ const setupData = () => {
           return { data: pullRequestData };
         }) as Octokit['rest']['pulls']['get'],
       },
-      orgs: {
-        listForUser: (async (options) => {
-          if (options?.username === 'eldar') {
-            return {
-              data: [
-                {
-                  login: 'VKCOM',
-                },
-              ],
-            };
-          }
-          return {
-            data: [
-              {
-                login: 'OTHER',
-              },
-            ],
-          };
-        }) as Octokit['rest']['orgs']['listForUser'],
-      },
       repos: {
         listReleases: (async (options) => {
           getReleaseRequest(options);
@@ -291,7 +271,7 @@ describe('run updateReleaseNotes', () => {
 - Поправлены баги в документации
 `,
       user: {
-        login: 'eldar',
+        login: 'EldarMuhamethanov',
       },
     };
 
@@ -368,7 +348,7 @@ describe('run updateReleaseNotes', () => {
 Какие-то изменения Pull Request
 `,
       user: {
-        login: 'eldar',
+        login: 'EldarMuhamethanov',
       },
     };
     mockedData.lastReleaseName = 'v6.5.1';

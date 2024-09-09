@@ -1,13 +1,19 @@
 import { parsePullRequestReleaseNotesBody } from './parsing/parsePullRequestReleaseNotesBody';
 import { releaseNotesUpdater } from './parsing/releaseNotesUpdater';
 import * as github from '@actions/github';
-import * as core from '@actions/core';
-import { checkVKCOMMember } from './checkVKCOMMember';
 import { getRelease } from './getRelease';
 import { calculateReleaseVersion } from './calculateReleaseVersion';
 import { getPullRequestReleaseNotesBody } from './parsing/getPullRequestReleaseNotesBody';
 
 const EMPTY_NOTES = '-';
+
+const VKUI_AUTHORS = [
+  'andrey-medvedev-vk',
+  'BlackySoul',
+  'EldarMuhamethanov',
+  'inomdzhon',
+  'SevereCloud',
+];
 
 export const updateReleaseNotes = async ({
   octokit,
@@ -56,7 +62,6 @@ export const updateReleaseNotes = async ({
     milestone: pullRequest.milestone,
   });
 
-  core.debug(`[updateReleaseNotes] releaseVersion: ${releaseVersion}`);
   if (!releaseVersion) {
     return;
   }
@@ -72,10 +77,6 @@ export const updateReleaseNotes = async ({
     return;
   }
 
-  const isVKCOMember = await checkVKCOMMember({ octokit, author });
-
-  core.debug(`[updateReleaseNotes] isVKCOMember: ${isVKCOMember}`);
-
   const releaseUpdater = releaseNotesUpdater(release.body || '');
 
   if (pullRequestReleaseNotes) {
@@ -83,7 +84,7 @@ export const updateReleaseNotes = async ({
       releaseUpdater.addNotes({
         noteData: note,
         version: releaseVersion,
-        author: isVKCOMember ? '' : author,
+        author: VKUI_AUTHORS.includes(author) ? '' : author,
       });
     });
   } else {
